@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shijian-v2';
+const CACHE_NAME = 'shijian-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',
