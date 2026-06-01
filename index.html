@@ -60,8 +60,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   position:fixed;z-index:1;left:0;right:0;
   top:0;
   bottom:0;
-  display:flex;flex-direction:column;overflow:hidden;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  display:flex;flex-direction:column;overflow:hidden
 }
 
 /* ─── Topbar ─── */
@@ -827,7 +826,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div class="accent-swatches" id="accent-swatches"></div>
     </div>
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);text-align:center">
-      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.haoleia.0</span>
+      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.weishabucongpwa.0</span>
     </div>
   </div>
 </div>
@@ -1870,15 +1869,20 @@ function renderMobileCalendar(preserveScroll) {
   }
 
   if (savedScrollTop !== null) {
-    // Restore scroll position immediately (no jump)
     container.scrollTop = savedScrollTop;
   } else {
-    // First load only: scroll today's month into view
     const todayBlock = container.querySelector('[data-month-today="1"]');
     if (todayBlock) {
       setTimeout(() => { todayBlock.scrollIntoView({behavior:'instant',block:'start'}); }, 50);
     }
   }
+
+  // ★ 诊断块：确认滚动容器底部是否可见
+  const diagBlock = document.createElement('div');
+  diagBlock.id = 'diag-block';
+  diagBlock.style.cssText = 'background:red;color:#fff;font-size:20px;font-weight:bold;text-align:center;padding:30px;margin:10px;border-radius:12px;';
+  diagBlock.textContent = '★ 这里是底部 ★ 如果能看到这行字说明滚动到底部有效';
+  container.appendChild(diagBlock);
 }
 
 function buildMobileMonthBlock(year, month) {
