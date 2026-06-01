@@ -55,8 +55,8 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 #bg-layer[data-light]::after{background:rgba(255,255,255,0.10)}
 
 /* ─── App Shell ─── */
-/* top:0 bottom:0 fills the screen. padding-bottom pushes content above home indicator. */
-#app{position:fixed;z-index:1;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
+/* top:0 bottom:0 fills the screen. Safe area handled by #safe-area-bottom spacer inside. */
+#app{position:fixed;z-index:1;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;overflow:hidden}
 
 /* ─── Topbar ─── */
 .topbar{display:flex;align-items:center;padding:0 18px;height:46px;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid var(--border);flex-shrink:0;gap:4px}
@@ -182,7 +182,8 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .entry-del-btn:hover{background:rgba(200,80,80,0.18);color:rgba(240,140,140,0.9)}
 .diary-entry-row:hover .entry-del-btn{opacity:1}
 .diary-editor{flex:1;display:flex;flex-direction:column;padding:20px 26px;overflow-y:auto}
-/* Mobile-specific elements hidden on desktop */
+/* Safe area bottom spacer — fills home indicator zone, shows bg-layer through it */
+#safe-area-bottom{flex-shrink:0;height:env(safe-area-inset-bottom,0px);width:100%}
 .diary-editor-topbar{display:none}
 #editor-footer-mobile{display:flex;}
 .diary-list-toolbar{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
@@ -712,6 +713,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 </div>
 
 </div><!-- /main-area -->
+<div id="safe-area-bottom"></div>
 </div><!-- /app -->
 
 <!-- ── Mobile Floating Add Button ── -->
@@ -825,7 +827,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div class="accent-swatches" id="accent-swatches"></div>
     </div>
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);text-align:center">
-      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.1.0</span>
+      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.8.0</span>
     </div>
   </div>
 </div>
