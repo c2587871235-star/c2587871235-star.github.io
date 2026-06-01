@@ -1836,6 +1836,26 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// ── DIAGNOSTIC: show actual safe-area values and app dimensions ──
+(function showDiag() {
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:red;color:white;font-size:13px;padding:6px 10px;font-family:monospace;pointer-events:none';
+  document.body.appendChild(d);
+  // Read computed env() values via a test element
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;bottom:0;left:0;width:1px;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden';
+  document.body.appendChild(probe);
+  const app = document.getElementById('app');
+  const update = () => {
+    const saB = probe.getBoundingClientRect().height;
+    const appR = app.getBoundingClientRect();
+    const isPWA = window.navigator.standalone;
+    d.textContent = `safeB=${saB}px app.bottom=${Math.round(appR.bottom)} win.h=${window.innerHeight} screen.h=${screen.height} PWA=${isPWA}`;
+  };
+  update();
+  setTimeout(update, 500);
+})();
+
 // ═══════════════════════════════════════════════════
 //  Mobile Calendar — Vertical Scrollable Months
 // ═══════════════════════════════════════════════════
