@@ -56,7 +56,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 
 /* ─── App Shell ─── */
 /* #app stops above home indicator; bg-layer fills the safe area zone below */
-#app{position:fixed;z-index:1;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;overflow:hidden}
+#app{position:fixed;z-index:1;left:0;right:0;top:0;bottom:env(safe-area-inset-bottom,0px);display:flex;flex-direction:column;overflow:hidden}
 
 /* ─── Topbar ─── */
 .topbar{display:flex;align-items:center;padding:0 18px;height:46px;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid var(--border);flex-shrink:0;gap:4px}
@@ -304,7 +304,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   /* Scrollable months container */
   #mobile-cal-scroll {
     display: flex; flex-direction: column; flex: 1; overflow-y: auto;
-    -webkit-overflow-scrolling: touch; padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+    -webkit-overflow-scrolling: touch; padding-bottom: 120px;
   }
 
   .mobile-month-block { padding: 14px 10px 10px; flex-shrink: 0; }
@@ -355,7 +355,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   .cat-filter-bar { flex-wrap: wrap; overflow: visible; width: 100%; row-gap: 6px; column-gap: 5px; }
   .cat-filter-label { width: 100%; margin-bottom: 0; }
   .cat-filter-btn { font-size: 11px; padding: 4px 10px; white-space: nowrap; flex-shrink: 0; }
-  .tl-scroll { flex: 1; overflow-y: auto; min-height: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .tl-scroll { flex: 1; overflow-y: auto; min-height: 0; }
   .tl-empty { min-height: 200px; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; padding: 0 20px; box-sizing: border-box; text-align: center; }
   .tl-empty p { white-space: normal; word-break: break-word; font-size: 12px; max-width: 100%; }
   .tl-content { padding: 8px 10px; }
@@ -390,7 +390,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
     gap: 4px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 14px 12px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding: 14px 12px 24px;
     position: relative;
     box-sizing: border-box;
   }
@@ -459,7 +459,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   /* Footer is a direct flex child of diary-editor — always at the bottom */
   #editor-footer-mobile {
     flex-shrink: 0;
-    padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    padding: 8px 14px 10px;
     border-top: 1px solid var(--border-soft);
     background: transparent;
     margin-top: 0;
@@ -827,7 +827,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div class="accent-swatches" id="accent-swatches"></div>
     </div>
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);text-align:center">
-      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.1.0</span>
+      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.4.0</span>
     </div>
   </div>
 </div>
@@ -1129,15 +1129,15 @@ function setCatFilter(id) {
 //  Theme / Settings
 // ═══════════════════════════════════════════════════
 const BG_PRESETS = [
-  { id:'sky',     label:'晴空', light:true, themeColor:'#dff0f8', css:'linear-gradient(160deg,#e8f4fd 0%,#c9e8f5 30%,#d6eef8 60%,#eaf6fb 100%)', thumb:'linear-gradient(160deg,#c9e8f5,#eaf6fb)' },
-  { id:'afternoon',label:'午后',light:true, themeColor:'#f8eedd', css:'linear-gradient(150deg,#fdf6ec 0%,#f5e6d0 35%,#eedfc8 65%,#fdf6ec 100%)', thumb:'linear-gradient(150deg,#f5e6d0,#fdf6ec)' },
-  { id:'spring',  label:'春日', light:true, themeColor:'#f8dde8', css:'linear-gradient(145deg,#fce4ec 0%,#f8bbd0 25%,#e8f5e9 60%,#f3e5f5 100%)', thumb:'linear-gradient(145deg,#fce4ec,#e8f5e9)' },
-  { id:'aurora',  label:'极光', themeColor:'#111e2e', css:'linear-gradient(135deg,#0d1b2a 0%,#1a1035 35%,#0a2a1e 70%,#1a1035 100%)', thumb:'linear-gradient(135deg,#0d1b2a,#1a1035,#0a2a1e)' },
-  { id:'dusk',    label:'黄昏', themeColor:'#1f1030', css:'linear-gradient(155deg,#1a0a22 0%,#2d1040 30%,#4a1830 65%,#1c0f1a 100%)', thumb:'linear-gradient(155deg,#1a0a22,#4a1830)' },
-  { id:'midnight',label:'深夜', themeColor:'#080c14', css:'linear-gradient(180deg,#060910 0%,#0e1828 55%,#06090e 100%)',              thumb:'linear-gradient(180deg,#060910,#0e1828)' },
-  { id:'fog',     label:'雾',   themeColor:'#1c2232', css:'linear-gradient(135deg,#181c26 0%,#222b38 45%,#1b2130 100%)',              thumb:'linear-gradient(135deg,#181c26,#222b38)' },
-  { id:'forest',  label:'山林', themeColor:'#0b1610', css:'linear-gradient(155deg,#08120a 0%,#0e1e12 35%,#141b0c 70%,#08120a 100%)', thumb:'linear-gradient(155deg,#08120a,#0e1e12)' },
-  { id:'ink',     label:'墨',   themeColor:'#101014', css:'linear-gradient(135deg,#0c0c10 0%,#161620 55%,#0c0c10 100%)',              thumb:'linear-gradient(135deg,#0c0c10,#161620)' },
+  { id:'sky',     label:'晴空', light:true, themeColor:'#dff0f8', bottomColor:'#eaf6fb', css:'linear-gradient(160deg,#e8f4fd 0%,#c9e8f5 30%,#d6eef8 60%,#eaf6fb 100%)', thumb:'linear-gradient(160deg,#c9e8f5,#eaf6fb)' },
+  { id:'afternoon',label:'午后',light:true, themeColor:'#f8eedd', bottomColor:'#fdf6ec', css:'linear-gradient(150deg,#fdf6ec 0%,#f5e6d0 35%,#eedfc8 65%,#fdf6ec 100%)', thumb:'linear-gradient(150deg,#f5e6d0,#fdf6ec)' },
+  { id:'spring',  label:'春日', light:true, themeColor:'#f8dde8', bottomColor:'#f3e5f5', css:'linear-gradient(145deg,#fce4ec 0%,#f8bbd0 25%,#e8f5e9 60%,#f3e5f5 100%)', thumb:'linear-gradient(145deg,#fce4ec,#e8f5e9)' },
+  { id:'aurora',  label:'极光', themeColor:'#111e2e', bottomColor:'#1a1035', css:'linear-gradient(135deg,#0d1b2a 0%,#1a1035 35%,#0a2a1e 70%,#1a1035 100%)', thumb:'linear-gradient(135deg,#0d1b2a,#1a1035,#0a2a1e)' },
+  { id:'dusk',    label:'黄昏', themeColor:'#1f1030', bottomColor:'#1c0f1a', css:'linear-gradient(155deg,#1a0a22 0%,#2d1040 30%,#4a1830 65%,#1c0f1a 100%)', thumb:'linear-gradient(155deg,#1a0a22,#4a1830)' },
+  { id:'midnight',label:'深夜', themeColor:'#080c14', bottomColor:'#06090e', css:'linear-gradient(180deg,#060910 0%,#0e1828 55%,#06090e 100%)',              thumb:'linear-gradient(180deg,#060910,#0e1828)' },
+  { id:'fog',     label:'雾',   themeColor:'#1c2232', bottomColor:'#1b2130', css:'linear-gradient(135deg,#181c26 0%,#222b38 45%,#1b2130 100%)',              thumb:'linear-gradient(135deg,#181c26,#222b38)' },
+  { id:'forest',  label:'山林', themeColor:'#0b1610', bottomColor:'#08120a', css:'linear-gradient(155deg,#08120a 0%,#0e1e12 35%,#141b0c 70%,#08120a 100%)', thumb:'linear-gradient(155deg,#08120a,#0e1e12)' },
+  { id:'ink',     label:'墨',   themeColor:'#101014', bottomColor:'#0c0c10', css:'linear-gradient(135deg,#0c0c10 0%,#161620 55%,#0c0c10 100%)',              thumb:'linear-gradient(135deg,#0c0c10,#161620)' },
 ];
 
 const ACCENT_PRESETS = [
@@ -1163,8 +1163,8 @@ function applyBg(preset, isCustom) {
     document.body.style.background = '#111';
   } else {
     bg.style.backgroundImage = preset.css;
-    // Sync body background to theme color so the home indicator area matches
-    document.body.style.background = preset.themeColor || '#1a1520';
+    // Sync body background to gradient endpoint color so safe-area zone blends seamlessly
+    document.body.style.background = preset.bottomColor || preset.themeColor || '#1a1520';
   }
   // Switch overlay and text colors based on light/dark
   const overlay = bg.querySelector ? bg : document.getElementById('bg-layer');
