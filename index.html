@@ -310,7 +310,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   #mobile-cal-scroll {
     display: flex; flex-direction: column; flex: 1; overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 100px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-month-block { padding: 14px 10px 10px; flex-shrink: 0; }
@@ -826,7 +826,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div class="accent-swatches" id="accent-swatches"></div>
     </div>
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);text-align:center">
-      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.shijian.0</span>
+      <span style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em">时笺 · v1.9.0</span>
     </div>
   </div>
 </div>
@@ -1876,13 +1876,6 @@ function renderMobileCalendar(preserveScroll) {
       setTimeout(() => { todayBlock.scrollIntoView({behavior:'instant',block:'start'}); }, 50);
     }
   }
-
-  // ★ 诊断块：确认滚动容器底部是否可见
-  const diagBlock = document.createElement('div');
-  diagBlock.id = 'diag-block';
-  diagBlock.style.cssText = 'background:red;color:#fff;font-size:20px;font-weight:bold;text-align:center;padding:30px;margin:10px;border-radius:12px;';
-  diagBlock.textContent = '★ 这里是底部 ★ 如果能看到这行字说明滚动到底部有效';
-  container.appendChild(diagBlock);
 }
 
 function buildMobileMonthBlock(year, month) {
@@ -2260,25 +2253,6 @@ openMobileAddModal = function() {
 
 
 
-</script>
-
-<div id="diag-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:red;color:white;font-size:16px;font-weight:bold;padding:20px;border-radius:12px;text-align:left;line-height:1.8;max-width:90vw;word-break:break-all;"></div>
-<script>
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    var scroll = document.getElementById('mobile-cal-scroll');
-    var app = document.getElementById('app');
-    var el = document.getElementById('diag-overlay');
-    if (!el) return;
-    el.innerHTML = 
-      'innerH=' + window.innerHeight + '<br>' +
-      'appH=' + (app ? app.clientHeight : 'null') + '<br>' +
-      'scrollH=' + (scroll ? scroll.clientHeight : 'null') + '<br>' +
-      'scrollSH=' + (scroll ? scroll.scrollHeight : 'null') + '<br>' +
-      'scrollDisp=' + (scroll ? scroll.style.display : 'null') + '<br>' +
-      'standalone=' + (navigator.standalone);
-  }, 1500);
-});
 </script>
 
 </body>
