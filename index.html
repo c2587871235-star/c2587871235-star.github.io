@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -41,22 +41,17 @@
 
 /* ─── Reset ─── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;background:#080612}
+html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;background:#ddeef8}
 
 /* ─── Background ─── */
-#bg-layer{position:fixed;z-index:0;background-size:cover;background-position:center;transition:all 0.6s ease;
-  /* Extend beyond safe areas AND screen edges so no color gap in PWA standalone mode */
-  top: calc(-1 * env(safe-area-inset-top, 0px) - 40px);
-  bottom: calc(-1 * env(safe-area-inset-bottom, 0px) - 40px);
-  left: calc(-1 * env(safe-area-inset-left, 0px) - 10px);
-  right: calc(-1 * env(safe-area-inset-right, 0px) - 10px);
-}
+#bg-layer{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;transition:all 0.6s ease}
 #bg-layer::after{content:'';position:absolute;inset:0;background:rgba(8,6,18,0.48);transition:background 0.6s ease}
 #bg-layer[data-light]::after{background:rgba(255,255,255,0.10)}
 
+/* Lock app height to initial screen height (defeats iOS keyboard viewport resize) */
+#app { --locked-h: 100vh; top: 0 !important; height: var(--locked-h) !important; }
 /* ─── App Shell ─── */
-/* height is set by JS (pwaLayoutFix). bottom:0 is fallback for non-JS/desktop. */
-#app{position:fixed;z-index:1;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;overflow:hidden}
+#app{position:fixed;z-index:1;left:0;right:0;display:flex;flex-direction:column;overflow:hidden}
 
 /* ─── Topbar ─── */
 .topbar{display:flex;align-items:center;padding:0 18px;height:46px;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid var(--border);flex-shrink:0;gap:4px}
@@ -98,8 +93,8 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
    CALENDAR
 ═══════════════════════════════════════ */
 .cal-layout{display:flex;flex:1;overflow:hidden}
-.cal-main{flex:1;padding:20px 22px;overflow-y:auto;touch-action:pan-y}
-.cal-sidebar{width:228px;flex-shrink:0;padding:16px 14px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:10px;touch-action:pan-y}
+.cal-main{flex:1;padding:20px 22px;overflow-y:auto}
+.cal-sidebar{width:228px;flex-shrink:0;padding:16px 14px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:10px}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .cal-title{font-family:var(--font-serif);font-size:15px;font-weight:400;color:var(--text-primary);letter-spacing:0.04em}
 .nav-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--border);border-radius:50%;cursor:pointer;color:var(--text-secondary);transition:all 0.15s}
@@ -111,10 +106,9 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .day-cell:hover{background:rgba(255,255,255,0.05)}
 .day-cell.other-month{opacity:0.22}
 .day-cell.today{background:var(--accent-soft)}
-.day-cell.selected{background:rgba(var(--accent),0.28);outline:1.5px solid var(--accent-border)}
-.day-cell.today.selected{background:rgba(var(--accent),0.35);outline:1.5px solid var(--accent-border)}
+.day-cell.selected{background:rgba(255,255,255,0.07)}
 .day-num{font-size:11px;font-weight:400;color:var(--text-secondary);margin-bottom:3px;font-family:var(--font-serif)}
-.day-cell.today .day-num{color:var(--accent-hex);font-weight:600}
+.day-cell.today .day-num{color:var(--accent-hex);font-weight:500}
 .event-dot{font-size:9.5px;padding:1px 5px;border-radius:20px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px}
 .milestone-flag{position:absolute;top:3px;right:4px;font-size:9px;opacity:0.7}
 
@@ -142,7 +136,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .cat-filter-btn:hover{color:var(--text-primary);background:var(--glass-hover)}
 .cat-filter-btn.active{color:#fff}
 .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.tl-scroll{flex:1;overflow-y:auto;touch-action:pan-y}
+.tl-scroll{flex:1;overflow-y:auto}
 .tl-empty{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--text-tertiary);text-align:center;padding:0 30px;box-sizing:border-box;width:100%;overflow:hidden}
 .tl-empty svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5;opacity:0.35}
 .tl-empty p{font-size:12.5px;font-style:italic;white-space:normal;word-break:break-all;max-width:100%;text-align:center}
@@ -158,7 +152,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .tl-meta{font-size:11px;color:var(--text-secondary);margin-top:2px;display:flex;align-items:center;gap:5px}
 .tl-today-marker{display:flex;align-items:center;gap:10px;margin-bottom:26px;position:relative}
 .tl-today-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,var(--accent-border),transparent);top:50%;transform:translateY(-50%);z-index:0}
-.tl-today-node{width:12px;height:12px;border-radius:50%;background:var(--accent-hex);flex-shrink:0;margin-right:22px;position:relative;z-index:1}
+.tl-today-node{width:12px;height:12px;border-radius:50%;background:var(--accent-hex);flex-shrink:0;margin-right:22px;position:relative;z-index:1;box-shadow:0 0 10px var(--accent-hex)}
 .tl-today-label{font-size:11px;color:var(--accent-hex);font-weight:500;letter-spacing:0.04em;position:relative;z-index:1}
 .past-node{opacity:0.42}
 
@@ -166,7 +160,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
    DIARY  (desktop base)
 ═══════════════════════════════════════ */
 .diary-layout{display:flex;flex:1;overflow:hidden}
-.diary-list{width:198px;flex-shrink:0;padding:12px 9px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:4px;touch-action:pan-y}
+.diary-list{width:198px;flex-shrink:0;padding:12px 9px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 .diary-entry-row{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid transparent;transition:background 0.25s ease;position:relative;overflow:hidden}
 .diary-entry-row:hover{background:transparent}
 .diary-entry-row.active{background:transparent;border-color:transparent}
@@ -181,11 +175,9 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .entry-del-btn{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:50%;cursor:pointer;color:var(--text-tertiary);opacity:0;transition:opacity 0.15s,background 0.15s}
 .entry-del-btn:hover{background:rgba(200,80,80,0.18);color:rgba(240,140,140,0.9)}
 .diary-entry-row:hover .entry-del-btn{opacity:1}
-.diary-editor{flex:1;display:flex;flex-direction:column;padding:20px 26px;overflow-y:auto;touch-action:pan-y}
+.diary-editor{flex:1;display:flex;flex-direction:column;padding:20px 26px;overflow-y:auto}
 /* Mobile-specific elements hidden on desktop */
 .diary-editor-topbar{display:none}
-/* On desktop the footer is just a normal block at bottom of diary-editor */
-#editor-footer-mobile{display:flex;}
 .diary-list-toolbar{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
 .diary-list-toolbar .top-row{display:flex;align-items:center;gap:6px}
 .editor-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
@@ -198,10 +190,10 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 .tag-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;min-height:20px}
 .tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);border:0.5px solid var(--accent-border);color:rgba(var(--accent),0.9);cursor:pointer;letter-spacing:0.03em;transition:0.12s}
 .tag:hover{background:rgba(var(--accent),0.28)}
-.diary-title-input{width:100%;font-size:15.5px;font-weight:400;font-family:var(--font-serif);border:none;background:transparent;color:var(--text-primary);outline:none;border-bottom:1px solid var(--border-soft);padding-bottom:10px;margin-bottom:13px;letter-spacing:0.03em;transition:border-color 0.15s;-webkit-tap-highlight-color:transparent;-webkit-user-select:text;user-select:text;touch-action:manipulation}
+.diary-title-input{width:100%;font-size:15.5px;font-weight:400;font-family:var(--font-serif);border:none;background:transparent;color:var(--text-primary);outline:none;border-bottom:1px solid var(--border-soft);padding-bottom:10px;margin-bottom:13px;letter-spacing:0.03em;transition:border-color 0.15s;-webkit-tap-highlight-color:transparent;-webkit-user-select:text;user-select:text}
 .diary-title-input::placeholder{color:var(--text-tertiary);font-style:italic}
 .diary-title-input:focus{border-color:var(--border)}
-.diary-body-input{flex:1;width:100%;font-size:13px;line-height:1.9;font-family:var(--font-sans);border:none;background:transparent;color:var(--text-secondary);resize:none;outline:none;min-height:260px;letter-spacing:0.02em;-webkit-tap-highlight-color:transparent;-webkit-user-select:text;user-select:text;touch-action:manipulation}
+.diary-body-input{flex:1;width:100%;font-size:13px;line-height:1.9;font-family:var(--font-sans);border:none;background:transparent;color:var(--text-secondary);resize:none;outline:none;min-height:260px;letter-spacing:0.02em;-webkit-tap-highlight-color:transparent;-webkit-user-select:text;user-select:text}
 .diary-body-input::placeholder{color:var(--text-tertiary);font-style:italic}
 .editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:11px;border-top:1px solid var(--border-soft)}
 .char-count{font-size:10.5px;color:var(--text-tertiary)}
@@ -214,7 +206,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 ═══════════════════════════════════════ */
 .settings-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center}
 .settings-overlay.open{display:flex}
-.settings-panel{background:var(--panel-bg);backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,0.55);width:500px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:26px;animation:panelIn 0.22s ease;touch-action:pan-y}
+.settings-panel{background:var(--panel-bg);backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,0.55);width:500px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:26px;animation:panelIn 0.22s ease}
 @keyframes panelIn{from{opacity:0;transform:translateY(-10px) scale(0.97)}to{opacity:1;transform:none}}
 .settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
 .settings-title{font-family:var(--font-serif);font-size:15px;font-weight:400;color:var(--text-primary);letter-spacing:0.05em}
@@ -238,14 +230,14 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 /* ═══════════════════════════════════════
    CATEGORY MANAGER PANEL
 ═══════════════════════════════════════ */
-.cat-panel{background:var(--panel-bg);backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,0.55);width:440px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:26px;animation:panelIn 0.22s ease;touch-action:pan-y}
+.cat-panel{background:var(--panel-bg);backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,0.55);width:440px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:26px;animation:panelIn 0.22s ease}
 .cat-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-.cat-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:rgba(255,255,255,0.04);transition:all 0.13s;overflow:hidden}
+.cat-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:rgba(255,255,255,0.04);transition:all 0.13s}
 .cat-row:hover{background:rgba(255,255,255,0.07);border-color:var(--border)}
 .cat-row-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;cursor:pointer}
-.cat-row-name{flex:1;font-size:12.5px;color:var(--text-primary);min-width:0}
-.cat-row-count{font-size:10px;color:var(--text-tertiary);flex-shrink:0;white-space:nowrap;min-width:24px;text-align:right}
-.cat-row-del{width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:50%;cursor:pointer;color:var(--text-tertiary);transition:all 0.13s;flex-shrink:0}
+.cat-row-name{flex:1;font-size:12.5px;color:var(--text-primary)}
+.cat-row-count{font-size:10.5px;color:var(--text-tertiary);margin-right:4px}
+.cat-row-del{width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:50%;cursor:pointer;color:var(--text-tertiary);transition:all 0.13s}
 .cat-row-del:hover{background:rgba(255,80,80,0.18);color:#ff9090}
 .cat-row-del svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
 .new-cat-form{display:flex;gap:7px;align-items:center;padding:10px;background:rgba(255,255,255,0.04);border-radius:var(--radius-sm);border:1px solid var(--border-soft)}
@@ -293,60 +285,13 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
   .topbar-right { flex-shrink: 0; gap: 4px; }
   .icon-btn { width: 30px; height: 30px; flex-shrink: 0; }
 
-  /* ── Calendar: full scroll layout ── */
-  .cal-layout { flex-direction: column; overflow: hidden; position: relative; }
-  /* Hide the old static cal-main header/grid – replaced by scroll container */
-  .cal-main { display: none; }
+  /* ── Calendar: stack vertically ── */
+  .cal-layout { flex-direction: column; }
+  .cal-main { padding: 12px 10px; overflow-y: auto; flex: none; }
   .cal-sidebar {
-    width: 100%; border-left: none; border-top: none;
-    padding: 0; flex-shrink: 0; max-height: none; overflow-y: visible;
-    background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+    width: 100%; border-left: none; border-top: 1px solid var(--border);
+    padding: 12px 12px 20px; flex-shrink: 0; max-height: 52vh; overflow-y: auto;
   }
-
-  /* Scrollable months container */
-  #mobile-cal-scroll {
-    display: flex; flex-direction: column; flex: 1; overflow-y: auto;
-    -webkit-overflow-scrolling: touch; padding-bottom: 120px;
-    touch-action: pan-y;
-  }
-
-  .mobile-month-block { padding: 14px 10px 10px; flex-shrink: 0; }
-  .mobile-month-block .cal-header { margin-bottom: 10px; }
-  .mobile-month-block .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0; }
-
-  /* Floating edit button */
-  #mobile-add-btn {
-    position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%;
-    transform: translateX(-50%); z-index: 80;
-    background: var(--accent-hex); color: #fff;
-    border: none; border-radius: 30px; padding: 13px 28px;
-    font-size: 14px; font-family: var(--font-sans); font-weight: 500;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.28);
-    cursor: pointer; display: flex; align-items: center; gap: 8px;
-    transition: opacity 0.22s, transform 0.22s;
-    white-space: nowrap;
-  }
-  #mobile-add-btn.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(12px); }
-  #mobile-add-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
-
-  /* Add event modal (mobile) */
-  #mobile-add-modal {
-    display: none; position: fixed; inset: 0; z-index: 150;
-    background: rgba(0,0,0,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    align-items: flex-end;
-  }
-  #mobile-add-modal.open { display: flex; }
-  #mobile-add-modal-inner {
-    width: 100%; background: var(--panel-bg); border-radius: var(--radius) var(--radius) 0 0;
-    padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px));
-    animation: panelIn 0.22s ease;
-  }
-  #mobile-add-modal-inner .modal-title {
-    font-family: var(--font-serif); font-size: 15px; color: var(--text-primary);
-    margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
-  }
-  #mobile-add-modal-inner .add-form { gap: 10px; }
-
   .day-cell { min-height: 44px; padding: 3px 4px; }
   .event-dot { font-size: 8.5px; padding: 0 3px; }
   .day-num { font-size: 10px; }
@@ -372,7 +317,6 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
     min-width: 0;        /* prevent flex children from overflowing parent */
     max-width: 100%;     /* hard cap at screen width */
     display: block;      /* block so the rail inside can be 200% of THIS box */
-    height: 100%;        /* explicit height so diary-rail's height:100% resolves in Safari */
   }
 
   /* Inner rail wrapper that does the sliding */
@@ -396,7 +340,6 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
     padding: 14px 12px 24px;
     position: relative;
     box-sizing: border-box;
-    touch-action: pan-y;
   }
 
   /* EDITOR VIEW — right half of the rail = exactly 1 screen wide */
@@ -455,19 +398,9 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 16px 14px 8px;
+    padding: 16px 14px 100px;
     display: flex;
     flex-direction: column;
-    touch-action: pan-y;
-    /* prevent rubber-band from causing visual bounce past safe area */
-    overscroll-behavior-y: contain;
-  }
-  /* Footer is a direct flex child of diary-editor — always at the bottom */
-  #editor-footer-mobile {
-    flex-shrink: 0;
-    padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
-    border-top: 1px solid var(--border-soft);
-    background: transparent;
   }
   /* Hide the desktop editor-header (date+mood row) inside scroll */
   .diary-editor-scroll .editor-header { display: none; }
@@ -486,10 +419,10 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 
   .diary-title-input { font-size: 14px; }
 
-  /* ── Settings / Cat panels — centered on all screen sizes ── */
-  .settings-panel { width: calc(100vw - 32px); max-width: 460px; max-height: 88vh; border-radius: var(--radius); margin: 0 auto; }
-  .cat-panel { width: calc(100vw - 32px); max-width: 420px; max-height: 88vh; border-radius: var(--radius); margin: 0 auto; }
-  .settings-overlay.open { align-items: center; }
+  /* ── Settings / Cat panels full-width ── */
+  .settings-panel { width: 100%; max-width: 100vw; max-height: 90vh; border-radius: var(--radius) var(--radius) 0 0; margin-top: auto; }
+  .cat-panel { width: 100%; max-width: 100vw; max-height: 90vh; border-radius: var(--radius) var(--radius) 0 0; margin-top: auto; }
+  .settings-overlay.open { align-items: flex-end; }
 
   /* ── Toast position ── */
   .save-toast { bottom: 80px; right: 14px; }
@@ -502,6 +435,9 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 /* Safe area insets for iPhone notch / home indicator */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   @media (max-width: 600px) {
+    .cal-sidebar, .diary-editor, .tl-layout {
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    }
     .topbar {
       padding-top: env(safe-area-inset-top);
       height: calc(46px + env(safe-area-inset-top));
@@ -536,7 +472,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
     <button class="tab" onclick="switchTab('diary',this)">
       <!-- notebook icon -->
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      简记
+      日记
     </button>
   </div>
   <div class="topbar-right">
@@ -577,8 +513,6 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
         <div class="day-name">三</div><div class="day-name">四</div><div class="day-name">五</div><div class="day-name">六</div>
       </div>
     </div>
-    <!-- Mobile vertical scroll months (shown only on mobile via JS) -->
-    <div id="mobile-cal-scroll"></div>
     <div class="cal-sidebar">
       <div class="selected-date-display" id="sidebar-date"></div>
       <div class="sidebar-label">日程</div>
@@ -650,7 +584,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
         <div class="top-row">
           <button class="glass-btn primary" onclick="newEntry()">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            新建简记
+            新建日记
           </button>
           <button onclick="toggleDiaryMenu(event)" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;flex-shrink:0" title="更多">···</button>
         </div>
@@ -658,11 +592,11 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div id="diary-menu" style="display:none;position:absolute;left:12px;right:12px;top:60px;background:var(--dropdown-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 0;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,0.4)">
         <button onclick="exportDiary();document.getElementById('diary-menu').style.display='none'" style="display:flex;align-items:center;gap:7px;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--text-secondary);font-size:12px;font-family:var(--font-sans);cursor:pointer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          导出简记
+          导出日记
         </button>
         <button onclick="document.getElementById('diary-import-input').click();document.getElementById('diary-menu').style.display='none'" style="display:flex;align-items:center;gap:7px;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--text-secondary);font-size:12px;font-family:var(--font-sans);cursor:pointer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          导入简记
+          导入日记
         </button>
       </div>
       <input type="file" id="diary-import-input" accept=".json" style="display:none" onchange="importDiary(event)">
@@ -676,7 +610,7 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
       <div class="diary-editor-topbar">
         <button class="diary-back-btn" onclick="showDiaryList()">
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-          简记
+          日记
         </button>
         <span class="editor-date" id="editor-date"></span>
         <div class="editor-mood">
@@ -705,10 +639,9 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 
         <input class="diary-title-input" id="diary-title" placeholder="标题…" oninput="autoSave()"/>
         <textarea class="diary-body-input" id="diary-body" placeholder="今天发生了什么…" oninput="autoSave()"></textarea>
-      </div>
-      <!-- Footer pinned outside scroll, always at bottom of editor -->
-      <div class="editor-footer" id="editor-footer-mobile">
-        <span class="char-count" id="char-count">0 字</span>
+        <div class="editor-footer">
+          <span class="char-count" id="char-count">0 字</span>
+        </div>
       </div>
     </div>
 
@@ -718,85 +651,6 @@ html,body{width:100%;height:100%;font-family:var(--font-sans);overflow:hidden;ba
 
 </div><!-- /main-area -->
 </div><!-- /app -->
-
-<!-- ── Mobile Floating Add Button ── -->
-<button id="mobile-add-btn" class="hidden" onclick="openMobileAddModal()">
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-  编辑当日
-</button>
-
-<!-- ── Mobile Add Event Modal ── -->
-<div id="mobile-add-modal" onclick="handleMobileModalOverlay(event)" style="display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.52);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px">
-  <div id="mobile-add-modal-inner" style="width:100%;max-width:420px;max-height:82vh;background:var(--panel-bg);border-radius:16px;border:1px solid var(--border);box-shadow:0 24px 64px rgba(0,0,0,0.55);display:flex;flex-direction:column;overflow:hidden;animation:panelIn 0.22s ease">
-    <!-- Modal header -->
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 12px;border-bottom:1px solid var(--border-soft);flex-shrink:0">
-      <span id="mobile-add-modal-date" style="font-family:var(--font-serif);font-size:15px;color:var(--text-primary)"></span>
-      <button onclick="closeMobileAddModal()" style="background:transparent;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);flex-shrink:0">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <!-- Scrollable body -->
-    <div style="flex:1;overflow-y:auto;padding:14px 18px 18px;display:flex;flex-direction:column;gap:14px;touch-action:pan-y">
-      <!-- Events list section -->
-      <div>
-        <div class="sidebar-label" style="margin-bottom:8px">当日事件</div>
-        <div id="mob-events-list"></div>
-      </div>
-      <!-- Divider -->
-      <div style="height:1px;background:var(--border-soft)"></div>
-      <!-- Add event section -->
-      <div>
-        <div class="sidebar-label" style="margin-bottom:8px">新增事件</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <input class="glass-input" id="mob-ev-title" placeholder="事件名称" />
-          <!-- Time picker trigger -->
-          <div id="mob-time-display" onclick="openTimePicker()" style="display:flex;align-items:center;gap:8px;width:100%;font-size:12px;font-family:var(--font-sans);padding:7px 10px;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,0.07);color:var(--text-primary);cursor:pointer;user-select:none">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span id="mob-time-label" style="flex:1;color:var(--text-tertiary)">全天（点击选择时间）</span>
-            <button onclick="event.stopPropagation();clearMobTime()" id="mob-time-clear" style="display:none;background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;padding:0;line-height:1;font-size:13px">✕</button>
-          </div>
-          <input type="hidden" id="mob-ev-time" value="">
-          <div id="mob-cat-select-wrap">
-            <div id="mob-cat-select-display" onclick="toggleMobCatDropdown(event)" style="display:flex;align-items:center;gap:8px;width:100%;font-size:12px;font-family:var(--font-sans);padding:7px 10px;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,0.07);color:var(--text-primary);cursor:pointer;user-select:none">
-              <span id="mob-cat-select-ball" style="width:10px;height:10px;border-radius:50%;background:#c86450;flex-shrink:0;display:inline-block"></span>
-              <span id="mob-cat-select-label" style="flex:1">一级 — 最重大</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
-          <input type="hidden" id="mob-ev-cat-select" value="p1">
-          <button class="glass-btn primary" style="padding:10px" onclick="addEventMobile()">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            添加
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Time Picker Overlay ── -->
-<div id="time-picker-overlay" onclick="handleTimePickerOverlay(event)" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center">
-  <div id="time-picker-inner" style="background:var(--panel-bg);border-radius:16px;border:1px solid var(--border);box-shadow:0 16px 48px rgba(0,0,0,0.5);width:280px;overflow:hidden;animation:panelIn 0.18s ease">
-    <!-- Header -->
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;border-bottom:1px solid var(--border-soft)">
-      <button onclick="cancelTimePicker()" style="background:transparent;border:none;color:var(--text-secondary);font-size:13px;font-family:var(--font-sans);cursor:pointer;padding:0">取消</button>
-      <span style="font-size:13px;font-weight:500;color:var(--text-primary);font-family:var(--font-sans)">选择时间</span>
-      <button onclick="confirmTimePicker()" style="background:transparent;border:none;color:var(--accent-hex);font-size:13px;font-family:var(--font-sans);cursor:pointer;padding:0;font-weight:500">确定</button>
-    </div>
-    <!-- Wheels -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:0;padding:0;position:relative;height:200px;overflow:hidden">
-      <!-- Highlight band -->
-      <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:40px;background:var(--glass);border-top:1px solid var(--border);border-bottom:1px solid var(--border);pointer-events:none;z-index:1"></div>
-      <!-- Gradient masks -->
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,var(--panel-bg) 0%,transparent 30%,transparent 70%,var(--panel-bg) 100%);pointer-events:none;z-index:2"></div>
-      <!-- Hour wheel -->
-      <div id="tp-hour-wheel" style="flex:1;height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;text-align:center;touch-action:pan-y"></div>
-      <div style="font-size:18px;color:var(--text-secondary);padding:0 2px;flex-shrink:0;z-index:3;pointer-events:none">:</div>
-      <!-- Minute wheel -->
-      <div id="tp-min-wheel" style="flex:1;height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;text-align:center;touch-action:pan-y"></div>
-    </div>
-  </div>
-</div>
 
 <!-- Save Toast -->
 <div class="save-toast" id="save-toast">
@@ -996,7 +850,7 @@ function renderCatList() {
           onchange="updateCategoryColor('${c.id}',this.value);renderCatList()">
       </div>
       <input class="cat-row-name-input" value="${c.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" 
-        style="flex:1;min-width:0;font-size:12.5px;color:var(--text-primary);background:transparent;border:none;border-bottom:1px solid transparent;outline:none;font-family:var(--font-sans);padding:1px 4px;cursor:text;transition:border-color 0.15s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+        style="flex:1;font-size:12.5px;color:var(--text-primary);background:transparent;border:none;border-bottom:1px solid transparent;outline:none;font-family:var(--font-sans);padding:1px 4px;cursor:text;transition:border-color 0.15s"
         onfocus="this.style.borderBottomColor='var(--border)'"
         onblur="this.style.borderBottomColor='transparent';updateCategoryName('${c.id}',this.value)"
         onkeydown="if(event.key==='Enter'){this.blur()}"
@@ -1344,15 +1198,6 @@ const today = new Date();
 let curYear=today.getFullYear(), curMonth=today.getMonth();
 let selectedDate=new Date(today);
 
-// Sort events array by time (earlier first, '全天' last) — returns new array
-function sortedEvs(evArr) {
-  return [...evArr].sort((a, b) => {
-    const ta = a.time && a.time !== '全天' ? a.time : '99:99';
-    const tb = b.time && b.time !== '全天' ? b.time : '99:99';
-    return ta.localeCompare(tb);
-  });
-}
-
 function fmtKey(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function fmtIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function parseDate(str){const[y,m,d]=str.split('-').map(Number);return new Date(y,m-1,d)}
@@ -1367,21 +1212,8 @@ function switchTab(t,btn){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('pane-'+t).classList.add('active');
-  if(t==='calendar'){
-    // Reset to today's month and re-select today
-    curYear=today.getFullYear(); curMonth=today.getMonth();
-    selectedDate=new Date(today);
-    mobileSelectedDate=new Date(today);
-    renderCalendar();
-    if(isMobileView()){
-      // Re-render months then scroll today's month block to the top
-      renderMobileCalendar(false);
-      updateMobileAddBtn();
-    }
-  }
   if(t==='timeline'){renderCatFilterBar();renderTimeline();}
   if(t==='diary'){renderEntryList();if(entries.length>0&&activeIdx<0){activeIdx=0;loadEntry(0);}}
-  if(t!=='calendar'){const addBtn=document.getElementById('mobile-add-btn');if(addBtn)addBtn.classList.add('hidden');}
 }
 
 // ── Calendar ──
@@ -1408,7 +1240,7 @@ function renderCalendar(){
     if(events[key]){
       const hasP1=events[key].some(e=>e.catId==='p1');
       if(hasP1){const f=document.createElement('span');f.className='milestone-flag';f.textContent='🚩';cell.appendChild(f);}
-      sortedEvs(events[key]).slice(0,2).forEach(ev=>{
+      events[key].slice(0,2).forEach(ev=>{
         const cat=catById(ev.catId);
         const dot=document.createElement('div');
         dot.className='event-dot';
@@ -1429,17 +1261,15 @@ function renderCalendar(){
 function renderSidebar(){
   document.getElementById('sidebar-date').textContent=selectedDate.getFullYear()+'年'+(selectedDate.getMonth()+1)+'月'+selectedDate.getDate()+'日';
   const key=fmtKey(selectedDate);
-  const evs=sortedEvs(events[key]||[]);
+  const evs=events[key]||[];
   const c=document.getElementById('sidebar-events');
   if(!evs.length){c.innerHTML='<div class="empty-msg">暂无日程</div>';return;}
-  const origEvs=events[key]||[];
-  c.innerHTML=evs.map((ev)=>{
-    const origIdx=origEvs.indexOf(ev);
+  c.innerHTML=evs.map((ev,i)=>{
     const cat=catById(ev.catId);
     const bg=hexToRgba(cat.color,0.15);
     const bd=hexToRgba(cat.color,0.48);
     return`<div class="event-item" style="background:${bg};border-left-color:${bd};color:${cat.color}">
-      <button class="event-item-del" onclick="deleteEventSidebar('${key}',${origIdx})" title="删除">
+      <button class="event-item-del" onclick="deleteEventSidebar('${key}',${i})" title="删除">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="event-item-title">${ev.title}</div>
@@ -1460,14 +1290,7 @@ function deleteEventSidebar(key,idx){
 }
 
 function prevMonth(){if(curMonth===0){curMonth=11;curYear--;}else curMonth--;renderCalendar();}
-function nextMonth(){
-  const maxYear = today.getFullYear() + 5;
-  if(curMonth===11){
-    if(curYear >= maxYear) return;
-    curMonth=0;curYear++;
-  } else curMonth++;
-  renderCalendar();
-}
+function nextMonth(){if(curMonth===11){curMonth=0;curYear++;}else curMonth++;renderCalendar();}
 
 function addEvent(){
   const t=document.getElementById('ev-title').value.trim();
@@ -1494,15 +1317,7 @@ function renderTimeline(){
       items.push({date:new Date(y,m-1,d),key,ev});
     });
   });
-  // Sort by date, then by time within same day
-  items.sort((a,b)=>{
-    const dateDiff = a.date - b.date;
-    if (dateDiff !== 0) return dateDiff;
-    // Same date: sort by time string (HH:MM). '全天' goes last.
-    const ta = a.ev.time && a.ev.time !== '全天' ? a.ev.time : '99:99';
-    const tb = b.ev.time && b.ev.time !== '全天' ? b.ev.time : '99:99';
-    return ta.localeCompare(tb);
-  });
+  items.sort((a,b)=>a.date-b.date);
   if(!items.length){
     body.innerHTML=`<div class="tl-empty">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
@@ -1567,17 +1382,17 @@ function saveEntry(){
 }
 function renderEntryList(){
   const list=document.getElementById('entry-list');
-  if(!entries.length){list.innerHTML='<div class="empty-msg">暂无简记</div>';return;}
+  if(!entries.length){list.innerHTML='<div class="empty-msg">暂无日记</div>';return;}
   list.innerHTML=entries.map((e,i)=>{
     return`<div class="diary-entry-row" onclick="tapEntry(this,${i})">
       <div class="entry-text">
         <div class="entry-date">${e.date}</div>
         <div class="entry-title-row">
           ${e.mood?`<span class="entry-mood-icon">${e.mood}</span>`:''}
-          <span class="entry-preview">${e.title||e.body||'空白简记'}</span>
+          <span class="entry-preview">${e.title||e.body||'空白日记'}</span>
         </div>
       </div>
-      <button class="entry-del-btn" title="删除简记" onclick="event.stopPropagation();deleteEntryByIdx(${i})">
+      <button class="entry-del-btn" title="删除日记" onclick="event.stopPropagation();deleteEntryByIdx(${i})">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
       </button>
     </div>`;
@@ -1623,12 +1438,12 @@ function autoSave() {
     setTimeout(() => t.classList.remove('show'), 1400);
   }, 600);
 }
-// ── 简记删除 ──
+// ── 日记删除 ──
 function deleteEntryByIdx(idx) {
   const e = entries[idx];
   if (!e) return;
-  const title = e.title || '空白简记';
-  showCatConfirm(`确认删除简记「${title}」？\n此操作不可撤销。`, () => {
+  const title = e.title || '空白日记';
+  showCatConfirm(`确认删除日记「${title}」？\n此操作不可撤销。`, () => {
     entries.splice(idx, 1);
     if (activeIdx === idx) {
       activeIdx = -1;
@@ -1677,16 +1492,16 @@ function toggleDiaryMenu(e) {
 
 
 function exportDiary(){
-  if(!entries.length){alert('暂无简记可导出');return;}
+  if(!entries.length){alert('暂无日记可导出');return;}
   const data=JSON.stringify({version:'1.0',type:'diary',data:entries},null,2);
   const blob=new Blob([data],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='时笺简记_'+new Date().toISOString().slice(0,10)+'.json';
+  a.download='时笺日记_'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
 }
 
-// ── 简记导入 ──
+// ── 日记导入 ──
 function importDiary(event){
   const file=event.target.files[0];
   if(!file)return;
@@ -1697,7 +1512,7 @@ function importDiary(event){
       const json=JSON.parse(e.target.result);
       if(json.type!=='diary'||!Array.isArray(json.data))throw new Error('格式错误');
       const count=json.data.length;
-      showCatConfirm(`导入 ${count} 条简记？`,()=>{
+      showCatConfirm(`导入 ${count} 条日记？`,()=>{
         const existIds=new Set(entries.map(x=>x.id));
         json.data.forEach(item=>{
           const newItem={...item};
@@ -1708,7 +1523,7 @@ function importDiary(event){
         entries.sort((a,b)=>b.id-a.id);
         renderEntryList();
         saveAll();
-        alert(`导入完成，新增 ${count} 条简记`);
+        alert(`导入完成，新增 ${count} 条日记`);
       }, '确认导入', false);
     }catch(err){alert('导入失败：'+err.message);}
     try{input.value='';}catch(_){}
@@ -1800,28 +1615,20 @@ refreshCatSelects();
 renderCalendar();
 _appReady = true;
 
-// ── 防止 iOS 页面被拖动/键盘顶起 ──
-// With interactive-widget=resizes-visual + position:fixed top:0 bottom:0,
-// the layout stays fixed. We only need to block stray touchmove on non-scrollable areas.
-(function preventPageDrag() {
-  // Re-lock on orientation change: update --locked-h for any consumers that use it
-  const setH = () => {
-    const h = window.innerHeight;
-    document.getElementById('app').style.setProperty('--locked-h', h + 'px');
-  };
-  setH();
-  window.addEventListener('orientationchange', () => setTimeout(setH, 400));
-
-  // Block touchmove on non-scrollable areas to prevent rubber-band / page drift
-  document.body.addEventListener('touchmove', function(e) {
-    let el = e.target;
-    while (el && el !== document.body) {
-      const ov = window.getComputedStyle(el).overflowY;
-      if ((ov === 'auto' || ov === 'scroll') && el.scrollHeight > el.clientHeight) return;
-      el = el.parentElement;
-    }
-    e.preventDefault();
-  }, { passive: false });
+// ── 锁住初始高度，防止 iOS 键盘弹出时顶起页面 ──
+(function lockAppHeight() {
+  const app = document.getElementById('app');
+  const h = window.innerHeight;
+  app.style.setProperty('--locked-h', h + 'px');
+  app.style.height = h + 'px';
+  // Re-lock on orientation change (but NOT on resize caused by keyboard)
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      const newH = window.innerHeight;
+      app.style.setProperty('--locked-h', newH + 'px');
+      app.style.height = newH + 'px';
+    }, 300);
+  });
 })();
 
 // ══════════════════════════════════════
@@ -1832,519 +1639,6 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
-
-// ═══════════════════════════════════════════════════
-//  Mobile Calendar — Vertical Scrollable Months
-// ═══════════════════════════════════════════════════
-const MONTHS_CN = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-
-// Whether we are on mobile
-function isMobileView() { return window.innerWidth <= 600; }
-
-// Track if a date has been explicitly selected by the user on mobile
-let mobileSelectedDate = null; // null = no selection
-
-function renderMobileCalendar(preserveScroll) {
-  if (!isMobileView()) return;
-  const container = document.getElementById('mobile-cal-scroll');
-  // Save scroll position before re-render
-  const savedScrollTop = preserveScroll ? container.scrollTop : null;
-  container.innerHTML = '';
-
-  // Render 12 months: 3 past + current + 8 future
-  const now = new Date();
-  const startOffset = -3;
-  const endOffset = 60;
-
-  for (let offset = startOffset; offset <= endOffset; offset++) {
-    let y = now.getFullYear(), m = now.getMonth() + offset;
-    while (m < 0) { m += 12; y--; }
-    while (m > 11) { m -= 12; y++; }
-    container.appendChild(buildMobileMonthBlock(y, m));
-  }
-
-  if (savedScrollTop !== null) {
-    // Restore scroll position immediately (no jump)
-    container.scrollTop = savedScrollTop;
-  } else {
-    // First load only: scroll today's month into view
-    const todayBlock = container.querySelector('[data-month-today="1"]');
-    if (todayBlock) {
-      setTimeout(() => { todayBlock.scrollIntoView({behavior:'instant',block:'start'}); }, 50);
-    }
-  }
-}
-
-function buildMobileMonthBlock(year, month) {
-  const wrap = document.createElement('div');
-  wrap.className = 'mobile-month-block';
-  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
-  if (isCurrentMonth) wrap.setAttribute('data-month-today','1');
-
-  // Header
-  const header = document.createElement('div');
-  header.className = 'cal-header';
-  header.innerHTML = `<span class="cal-title">${year}年 ${MONTHS_CN[month]}</span>`;
-  wrap.appendChild(header);
-
-  // Day name row
-  const grid = document.createElement('div');
-  grid.className = 'cal-grid';
-  ['日','一','二','三','四','五','六'].forEach(n => {
-    const d = document.createElement('div');
-    d.className = 'day-name'; d.textContent = n;
-    grid.appendChild(d);
-  });
-
-  const first = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month+1, 0).getDate();
-  const daysInPrev = new Date(year, month, 0).getDate();
-  let dayCount = 1, nextDay = 1;
-
-  for (let i = 0; i < 42; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'day-cell';
-    let d, isOther = false;
-    if (i < first) { d = daysInPrev - (first-1-i); isOther = true; cell.classList.add('other-month'); }
-    else if (dayCount > daysInMonth) { d = nextDay++; isOther = true; cell.classList.add('other-month'); }
-    else d = dayCount++;
-
-    const cellDate = isOther
-      ? (i < first ? new Date(year, month-1, d) : new Date(year, month+1, d))
-      : new Date(year, month, d);
-
-    if (!isOther && cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
-    if (mobileSelectedDate && cellDate.toDateString() === mobileSelectedDate.toDateString()) cell.classList.add('selected');
-
-    const num = document.createElement('div');
-    num.className = 'day-num'; num.textContent = d;
-    cell.appendChild(num);
-
-    const key = fmtKey(cellDate);
-    if (events[key]) {
-      const hasP1 = events[key].some(e => e.catId === 'p1');
-      if (hasP1) { const f = document.createElement('span'); f.className = 'milestone-flag'; f.textContent = '🚩'; cell.appendChild(f); }
-      sortedEvs(events[key]).slice(0,2).forEach(ev => {
-        const cat = catById(ev.catId);
-        const dot = document.createElement('div');
-        dot.className = 'event-dot';
-        dot.style.background = hexToRgba(cat.color, 0.18);
-        dot.style.border = `0.5px solid ${hexToRgba(cat.color,0.45)}`;
-        dot.style.color = cat.color;
-        dot.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${cat.color};flex-shrink:0;display:inline-block"></span>${ev.title}`;
-        cell.appendChild(dot);
-      });
-    }
-
-    cell.addEventListener('click', () => {
-      mobileSelectedDate = cellDate;
-      // Re-render to update selected highlighting (preserve scroll position)
-      renderMobileCalendar(true);
-      // Show add button
-      updateMobileAddBtn();
-    });
-
-    grid.appendChild(cell);
-  }
-  wrap.appendChild(grid);
-
-  return wrap;
-}
-
-function deleteMobileEvent(key, idx) {
-  events[key].splice(idx, 1);
-  if (!events[key].length) delete events[key];
-  renderMobileCalendar();
-  saveAll();
-}
-
-function updateMobileAddBtn() {
-  const btn = document.getElementById('mobile-add-btn');
-  if (!btn) return;
-  if (mobileSelectedDate) {
-    btn.classList.remove('hidden');
-  } else {
-    btn.classList.add('hidden');
-  }
-}
-
-function openMobileAddModal() {
-  if (!mobileSelectedDate) return;
-  const modal = document.getElementById('mobile-add-modal');
-  const dateLabel = document.getElementById('mobile-add-modal-date');
-  dateLabel.textContent = mobileSelectedDate.getFullYear()+'年'+(mobileSelectedDate.getMonth()+1)+'月'+mobileSelectedDate.getDate()+'日';
-  // Populate cat dropdown
-  refreshMobCatSelect();
-  // Populate events list
-  renderMobEventsList();
-  modal.style.display = 'flex';
-}
-
-function renderMobEventsList() {
-  const listEl = document.getElementById('mob-events-list');
-  if (!listEl || !mobileSelectedDate) return;
-  const key = fmtKey(mobileSelectedDate);
-  const evs = sortedEvs(events[key] || []);
-  if (!evs.length) {
-    listEl.innerHTML = '<div class="empty-msg">暂无事件</div>';
-    return;
-  }
-  const origMobEvs = events[key] || [];
-  listEl.innerHTML = evs.map((ev) => {
-    const origIdx = origMobEvs.indexOf(ev);
-    const cat = catById(ev.catId);
-    const bg = hexToRgba(cat.color, 0.15);
-    const bd = hexToRgba(cat.color, 0.48);
-    return `<div class="event-item" style="background:${bg};border-left-color:${bd};color:${cat.color};margin-bottom:6px">
-      <div class="event-item-title">${ev.title}</div>
-      <div class="event-item-time">${ev.time}</div>
-      <div class="event-item-cat">
-        <span style="width:7px;height:7px;border-radius:50%;background:${cat.color};display:inline-block;flex-shrink:0"></span>
-        ${cat.name}
-      </div>
-      <button class="event-item-del" onclick="deleteMobEventInModal('${key}',${origIdx})" title="删除" style="opacity:0.7">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>`;
-  }).join('');
-}
-
-function deleteMobEventInModal(key, idx) {
-  events[key].splice(idx, 1);
-  if (!events[key].length) delete events[key];
-  renderMobEventsList();
-  renderMobileCalendar(true);
-  saveAll();
-}
-
-function closeMobileAddModal() {
-  document.getElementById('mobile-add-modal').style.display = 'none';
-}
-
-function handleMobileModalOverlay(e) {
-  if (e.target === document.getElementById('mobile-add-modal')) closeMobileAddModal();
-}
-
-function refreshMobCatSelect() {
-  const cats = allCats();
-  const currentId = document.getElementById('mob-ev-cat-select')?.value;
-  const valid = cats.find(c => c.id === currentId);
-  if (!valid && cats.length > 0) selectMobCat(cats[0].id);
-  else if (valid) {
-    document.getElementById('mob-cat-select-ball').style.background = valid.color;
-    document.getElementById('mob-cat-select-label').textContent = valid.name;
-  }
-}
-
-function selectMobCat(id) {
-  const cat = catById(id);
-  document.getElementById('mob-ev-cat-select').value = id;
-  document.getElementById('mob-cat-select-ball').style.background = cat.color;
-  document.getElementById('mob-cat-select-label').textContent = cat.name;
-  closeMobCatDropdown();
-}
-
-// Fixed-position dropdown (renders outside modal to avoid clipping)
-function toggleMobCatDropdown(e) {
-  e.stopPropagation();
-  const existing = document.getElementById('mob-cat-dropdown-fixed');
-  if (existing) { closeMobCatDropdown(); return; }
-
-  const trigger = document.getElementById('mob-cat-select-display');
-  const rect = trigger.getBoundingClientRect();
-  const cats = allCats();
-
-  const dd = document.createElement('div');
-  dd.id = 'mob-cat-dropdown-fixed';
-  dd.style.cssText = `position:fixed;z-index:9999;background:var(--dropdown-bg);border:1px solid var(--border);border-radius:8px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.55);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);`;
-  
-  // Populate items
-  dd.innerHTML = cats.map(c => `
-    <div onclick="selectMobCat('${c.id}')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;transition:background 0.12s;font-size:13px;font-family:var(--font-sans);color:var(--text-primary)"
-      onmouseover="this.style.background='rgba(255,255,255,0.09)'" onmouseout="this.style.background='transparent'">
-      <span style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0;display:inline-block"></span>
-      <span>${c.name}</span>
-    </div>`).join('');
-
-  document.body.appendChild(dd);
-
-  // Position: try below trigger, flip above if not enough space
-  const ddHeight = Math.min(cats.length * 41, 220);
-  dd.style.maxHeight = ddHeight + 'px';
-  const spaceBelow = window.innerHeight - rect.bottom - 8;
-  const spaceAbove = rect.top - 8;
-  const width = rect.width;
-  dd.style.width = width + 'px';
-  dd.style.left = rect.left + 'px';
-  if (spaceBelow >= ddHeight || spaceBelow >= spaceAbove) {
-    dd.style.top = (rect.bottom + 4) + 'px';
-  } else {
-    dd.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
-  }
-
-  // Close on outside click
-  setTimeout(() => {
-    document.addEventListener('click', closeMobCatDropdownOnce);
-  }, 0);
-}
-
-function closeMobCatDropdownOnce(e) {
-  const dd = document.getElementById('mob-cat-dropdown-fixed');
-  if (dd && !dd.contains(e.target)) {
-    closeMobCatDropdown();
-  }
-}
-
-function closeMobCatDropdown() {
-  const dd = document.getElementById('mob-cat-dropdown-fixed');
-  if (dd) dd.remove();
-  document.removeEventListener('click', closeMobCatDropdownOnce);
-}
-
-function addEventMobile() {
-  if (!mobileSelectedDate) return;
-  const t = document.getElementById('mob-ev-title').value.trim();
-  const ti = document.getElementById('mob-ev-time').value || '全天';
-  const catId = document.getElementById('mob-ev-cat-select').value;
-  if (!t) return;
-  const key = fmtKey(mobileSelectedDate);
-  if (!events[key]) events[key] = [];
-  events[key].push({title:t, time:ti, catId});
-  document.getElementById('mob-ev-title').value = '';
-  clearMobTime();
-  // Refresh events list in modal (keep modal open)
-  renderMobEventsList();
-  renderMobileCalendar(true);
-  renderCalendar();
-  saveAll();
-}
-
-// Initialize mobile calendar on load + resize
-function initMobileCalendarIfNeeded() {
-  const scroll = document.getElementById('mobile-cal-scroll');
-  const calMain = document.querySelector('.cal-main');
-  const calSidebar = document.querySelector('.cal-sidebar');
-  if (isMobileView()) {
-    scroll.style.display = 'flex';
-    if (calMain) calMain.style.display = 'none';
-    if (calSidebar) calSidebar.style.display = 'none';
-    renderMobileCalendar();
-  } else {
-    scroll.style.display = 'none';
-    if (calMain) calMain.style.display = '';
-    if (calSidebar) calSidebar.style.display = '';
-  }
-}
-
-// Patch addEvent/deleteEventSidebar to also refresh mobile calendar
-const _origAddEvent = addEvent;
-addEvent = function() { _origAddEvent(); if(isMobileView()) renderMobileCalendar(true); };
-const _origDeleteEventSidebar = deleteEventSidebar;
-deleteEventSidebar = function(key, idx) { _origDeleteEventSidebar(key, idx); if(isMobileView()) renderMobileCalendar(true); };
-
-window.addEventListener('resize', () => {
-  initMobileCalendarIfNeeded();
-  updateMobileAddBtn();
-});
-
-// Init after app is ready
-setTimeout(initMobileCalendarIfNeeded, 0);
-
-// ═══════════════════════════════════════════════════
-//  Time Picker (scroll wheel)
-// ═══════════════════════════════════════════════════
-const ITEM_H = 40; // px per wheel item
-
-function buildWheel(el, count, fmt) {
-  el.innerHTML = '';
-  // Top padding: pushes item[0] down so it can be centered in the 200px window
-  // Window = 200px, center = 100px from top, item height = 40px
-  // For item[0] to center: its top edge must be at 100 - 40/2 = 80px → pad = 80px
-  const PAD = 80; // px  (= container_height/2 - ITEM_H/2 = 100 - 20)
-  const topPad = document.createElement('div');
-  topPad.style.cssText = `height:${PAD}px;scroll-snap-align:none;flex-shrink:0;pointer-events:none`;
-  el.appendChild(topPad);
-  for (let i = 0; i < count; i++) {
-    const item = document.createElement('div');
-    item.style.cssText = `height:${ITEM_H}px;line-height:${ITEM_H}px;scroll-snap-align:center;font-size:20px;font-family:var(--font-sans);color:var(--text-primary);cursor:pointer;user-select:none`;
-    item.textContent = fmt(i);
-    item.dataset.val = i;
-    el.appendChild(item);
-  }
-  // Bottom padding mirrors top so last item can also center
-  const botPad = document.createElement('div');
-  botPad.style.cssText = `height:${PAD}px;scroll-snap-align:none;flex-shrink:0;pointer-events:none`;
-  el.appendChild(botPad);
-  // Remove scrollbar
-  el.style.cssText += ';scrollbar-width:none';
-}
-
-function wheelScrollTo(el, idx, animated) {
-  // PAD = 80px before first item; each item is ITEM_H=40px; to center item[idx]:
-  // scrollTop = PAD + idx * ITEM_H - (containerH/2 - ITEM_H/2) = 80 + idx*40 - 80 = idx*40
-  el.scrollTo({ top: idx * ITEM_H, behavior: animated ? 'smooth' : 'instant' });
-}
-
-function wheelGetIdx(el) {
-  // scrollTop = idx * ITEM_H  →  idx = round(scrollTop / ITEM_H)
-  return Math.max(0, Math.round(el.scrollTop / ITEM_H));
-}
-
-function openTimePicker() {
-  const overlay = document.getElementById('time-picker-overlay');
-  const hw = document.getElementById('tp-hour-wheel');
-  const mw = document.getElementById('tp-min-wheel');
-  buildWheel(hw, 24, h => String(h).padStart(2,'0'));
-  buildWheel(mw, 60, m => String(m).padStart(2,'0'));
-
-  // Set initial value from existing selection
-  const cur = document.getElementById('mob-ev-time').value;
-  let initH = 9, initM = 0;
-  if (cur && cur !== '全天') {
-    const parts = cur.split(':');
-    initH = parseInt(parts[0]) || 9;
-    initM = parseInt(parts[1]) || 0;
-  }
-  // Use requestAnimationFrame to ensure DOM is ready before scrolling
-  overlay.style.display = 'flex';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      wheelScrollTo(hw, initH, false);
-      wheelScrollTo(mw, initM, false);
-    });
-  });
-}
-
-function cancelTimePicker() {
-  document.getElementById('time-picker-overlay').style.display = 'none';
-}
-
-function handleTimePickerOverlay(e) {
-  if (e.target === document.getElementById('time-picker-overlay')) cancelTimePicker();
-}
-
-function confirmTimePicker() {
-  const hw = document.getElementById('tp-hour-wheel');
-  const mw = document.getElementById('tp-min-wheel');
-  const h = wheelGetIdx(hw);
-  const m = wheelGetIdx(mw);
-  const timeStr = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
-  document.getElementById('mob-ev-time').value = timeStr;
-  document.getElementById('mob-time-label').textContent = timeStr;
-  document.getElementById('mob-time-label').style.color = 'var(--text-primary)';
-  document.getElementById('mob-time-clear').style.display = '';
-  document.getElementById('time-picker-overlay').style.display = 'none';
-}
-
-function clearMobTime() {
-  document.getElementById('mob-ev-time').value = '';
-  document.getElementById('mob-time-label').textContent = '全天（点击选择时间）';
-  document.getElementById('mob-time-label').style.color = 'var(--text-tertiary)';
-  document.getElementById('mob-time-clear').style.display = 'none';
-}
-
-// Also reset time display when modal opens
-const _origOpenMobileAddModal = openMobileAddModal;
-openMobileAddModal = function() {
-  _origOpenMobileAddModal();
-  // Ensure time display is fresh (if value was cleared from last session)
-  const val = document.getElementById('mob-ev-time').value;
-  if (!val) {
-    document.getElementById('mob-time-label').textContent = '全天（点击选择时间）';
-    document.getElementById('mob-time-label').style.color = 'var(--text-tertiary)';
-    document.getElementById('mob-time-clear').style.display = 'none';
-  }
-};
-// ═══════════════════════════════════════════════════
-// iOS PWA (standalone) + Safari: robust full-screen layout lock
-//
-// Problem in PWA standalone mode:
-//   1. window.innerHeight at launch may exclude the home-indicator area
-//      → causes black bar at bottom
-//   2. Keyboard appearance changes visualViewport.height but NOT window.innerHeight
-//      → position:fixed elements drift, touch targets mis-align
-//   3. interactive-widget=overlays-content (in <meta viewport>) makes the keyboard
-//      float OVER content in Chrome/Android but is ignored by iOS Safari / WKWebView,
-//      so we still need a JS fallback.
-//
-// Strategy:
-//   • Use screen.height as the authoritative full-screen measure on iOS PWA
-//     (screen.height = physical screen height in CSS px, unaffected by keyboard/chrome)
-//   • Detect PWA mode via navigator.standalone
-//   • On visualViewport resize (keyboard), translate #app UP by the keyboard offset
-//     so it stays visually anchored at top, and the input above the keyboard
-//   • On orientationchange, re-measure after the OS finishes rotating
-// ═══════════════════════════════════════════════════
-(function pwaLayoutFix() {
-  const app = document.getElementById('app');
-  const isPWA = ('standalone' in navigator && navigator.standalone) ||
-                window.matchMedia('(display-mode: standalone)').matches;
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-  // ── 1. Compute and lock the true app height ──────────────────────────────
-  // In PWA standalone on iOS, window.innerHeight sometimes excludes the
-  // home-indicator safe area. screen.height is the reliable full-screen value.
-  function computeFullHeight() {
-    if (isPWA && isIOS) {
-      // screen.height accounts for the physical screen; status bar is part of
-      // our inset (black-translucent), so the app truly fills screen.height
-      return screen.height;
-    }
-    return window.innerHeight;
-  }
-
-  let lockedH = 0;
-
-  function lockHeight() {
-    const h = computeFullHeight();
-    if (h === lockedH) return;
-    lockedH = h;
-    app.style.height = h + 'px';
-    app.style.top    = '0';
-    app.style.bottom = 'auto'; // defeat bottom:0 which fights the explicit height
-  }
-
-  // Lock immediately + after two rAF frames (first paint may still be mid-layout)
-  lockHeight();
-  requestAnimationFrame(() => requestAnimationFrame(lockHeight));
-  // Extra safety net: sometimes PWA status bar height settles after 300 ms
-  setTimeout(lockHeight, 300);
-  setTimeout(lockHeight, 800);
-
-  // ── 2. Handle keyboard via visualViewport ────────────────────────────────
-  // When the virtual keyboard appears in iOS PWA, visualViewport.height shrinks
-  // and visualViewport.offsetTop may change. We shift #app up by the keyboard
-  // height so it stays fully visible and touch targets remain aligned.
-  if (window.visualViewport) {
-    let ticking = false;
-
-    function onVpChange() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
-        const vp = window.visualViewport;
-        const offsetY = vp.offsetTop || 0;
-        const keyboardH = Math.max(0, lockedH - vp.height - offsetY);
-
-        // Shift #app upward by adjusting 'top' (NOT transform — transform would make
-        // #app a new containing block, breaking child position:fixed overlays/modals)
-        app.style.top = keyboardH > 0 ? `-${keyboardH}px` : '0';
-      });
-    }
-
-    window.visualViewport.addEventListener('resize', onVpChange);
-    window.visualViewport.addEventListener('scroll', onVpChange);
-  }
-
-  // ── 3. Re-lock after orientation change ──────────────────────────────────
-  window.addEventListener('orientationchange', () => {
-    lockedH = 0; // force re-measure
-    // iOS fires orientationchange before dimensions have settled; wait 600 ms
-    setTimeout(lockHeight, 600);
-    setTimeout(lockHeight, 1000);
-  });
-})();
 
 </script>
 </body>
